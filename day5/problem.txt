@@ -1,0 +1,7 @@
+PART 1
+
+After the rearrangement procedure completes, what crate ends up on top of each stack?
+
+PART 2
+
+The crane can now move multiple crates
