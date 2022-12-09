@@ -5,3 +5,4 @@ check it out [here](https://adventofcode.com/)
 Problems I didn't manage to solve:
 
 - Day 7
+- Day 9
