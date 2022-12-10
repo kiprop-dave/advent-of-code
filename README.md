@@ -6,3 +6,4 @@ Problems I didn't manage to solve:
 
 - Day 7
 - Day 9
+- Day 10
