@@ -7,3 +7,4 @@ Problems I didn't manage to solve:
 - Day 9
 - Day 10
 - Day 11 part 2
+- Day 20

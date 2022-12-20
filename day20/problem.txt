@@ -1,0 +1,21 @@
+The encrypted file is a list of numbers. To mix the file, move each number forward or 
+backward in the file a number of positions equal to the value of the number being moved. 
+The list is circular, so moving a number off one end of the list wraps back around to the 
+other end as if the ends were connected.
+
+The numbers should be moved in the order they originally appear in the encrypted file. 
+Numbers moving around during the mixing process do not change the order in which the numbers are moved.
+
+1
+2
+-3
+3
+-2
+0
+4
+
+Then, the grove coordinates can be found by looking at the 1000th, 2000th, and 3000th numbers after the 
+value 0, wrapping around the list as necessary. In the above example, the 1000th number after 0 is 4, the 
+2000th is -3, and the 3000th is 2; adding these together produces 3.
+
+Mix your encrypted file exactly once. What is the sum of the three numbers that form the grove coordinates?
