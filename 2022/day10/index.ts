@@ -1,4 +1,6 @@
+//@ts-ignore
 import { readFile } from "fs/promises";
+//@ts-ignore
 import { join } from "path";
 
 class CathodeTube {
@@ -12,16 +14,18 @@ class CathodeTube {
   }
 
   noop() {
-    this.snapsot();
     this.cycles++;
+    this.snapsot();
   }
+
   add(value: number) {
-    this.snapsot();
     this.cycles += 1;
     this.snapsot();
     this.cycles += 1;
+    this.snapsot();
     this.registerValue += value;
   }
+
   snapsot() {
     let cycle = this.cycles;
     let x = this.registerValue;
@@ -47,18 +51,20 @@ const parseInput = async () => {
     encoding: "utf-8",
   });
   const formated = inputStr.split("\n");
-  return formated;
+  return formated.slice(0, -1);
 };
 
 const solution = async () => {
-  const input = await parseInput();
+  const input = await parseInput() as string[];
+  console.log(input.length);
   const crt = new CathodeTube();
-  input.forEach((el) => {
+  input.forEach((el, i) => {
     if (el === "noop") {
       crt.noop();
     } else {
       let command = el.split(" ").map((el, i) => (i === 1 ? parseInt(el) : el));
       if (typeof command[1] !== "number") {
+        console.log(command, i);
         throw new Error(" exception ");
       } else {
         crt.add(command[1]);

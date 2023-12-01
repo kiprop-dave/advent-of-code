@@ -9,7 +9,7 @@ const parseInput = async () => {
     encoding: "utf-8",
   });
   const format = inputStr.split("\n").map((line) => parseInt(line));
-  return format;
+  return format.slice(0, -1);
 };
 
 const mixArray = async () => {
