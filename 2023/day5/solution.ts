@@ -24,7 +24,7 @@ function parseFile(): InputData {
     "temperature-to-humidity": { data: [], next: "humidity-to-location" },
     "humidity-to-location": { data: [], next: "none" }
   }
-  const nums = data[0].split(': ')[1].split(' ').map(Number).sort((a, b) => a - b);
+  const nums = data[0].split(': ')[1].split(' ').map(Number);
   parsed.seed.data = nums;
   for (let i = 1; i < data.length; i++) {
     const content = data[i].trim().split('\n');
@@ -43,37 +43,91 @@ const aSolution = (data: InputData): number[] => {
   const finalLocations: number[] = [];
   for (let i = 0; i < data.seed.data.length; i++) {
     const queue: { num: number, next: keyof InputData | 'none' }[] = [{ num: data.seed.data[i], next: data.seed.next }];
-    let final = queue[0].num;
     while (queue.length > 0) {
       const { num, next } = queue.shift()!;
       const key = data[next] ? next : 'humidity-to-location';
-      //console.log(next);
+      const nextVal = { isOneToOne: true, val: 0 };
       for (let j = 0; (j < data[key].data.length); j++) {
         // @ts-ignore
         const [destination, source, range] = data[key].data[j];
         const upperBound = source + range;
-        //console.log(j, upperBound, destination, source, range);
-        if (next !== "none") {
-          if (source <= num && num <= upperBound) {
-            // @ts-ignore
-            queue.push({ num: num + (destination - source), next: data[key].next });
-          } else {
-            // @ts-ignore
-            queue.push({ num: num, next: data[key].next });
+        if (source <= num && num < upperBound) {
+          nextVal.isOneToOne = false;
+          nextVal.val = num + (destination - source);
+          break;
+        }
+      }
+      if (next in data) {
+        if (nextVal.isOneToOne) {
+          queue.push({ num: num, next: data[key].next });
+          if (key === 'humidity-to-location') {
+            finalLocations.push(num);
           }
         } else {
-          final = num;
+          if (key === 'humidity-to-location') {
+            finalLocations.push(nextVal.val);
+          }
+          //console.log(nextVal.val);
+          queue.push({ num: nextVal.val, next: data[key].next });
         }
       }
     }
-    console.log(final);
   }
-  return []
+  return finalLocations.sort((a, b) => a - b);
+}
+
+const bSolution = (data: InputData): number => {
+  const seeds: number[] = [];
+  for (let i = 0; i < data.seed.data.length; i += 2) {
+    const lowerBound = data.seed.data[i];
+    const upperBound = lowerBound + data.seed.data[i + 1];
+    for (let j = lowerBound; j < upperBound; j++) {
+      seeds.push(j);
+    }
+  }
+  seeds.sort((a, b) => a - b);
+  let smallest = Infinity;
+  for (let i = 0; i < seeds.length; i++) {
+    const queue: { num: number, next: keyof InputData | 'none' }[] = [{ num: seeds[i], next: data.seed.next }];
+    while (queue.length > 0) {
+      const { num, next } = queue.shift()!;
+      const key = data[next] ? next : 'humidity-to-location';
+      const nextVal = { isOneToOne: true, val: 0 };
+      for (let j = 0; (j < data[key].data.length); j++) {
+        // @ts-ignore
+        const [destination, source, range] = data[key].data[j];
+        const upperBound = source + range;
+        if (source <= num && num < upperBound) {
+          nextVal.isOneToOne = false;
+          nextVal.val = num + (destination - source);
+          break;
+        }
+      }
+      if (next in data) {
+        if (nextVal.isOneToOne) {
+          queue.push({ num: num, next: data[key].next });
+          if (key === 'humidity-to-location' && num < smallest) {
+            smallest = num;
+          }
+        } else {
+          if (key === 'humidity-to-location' && nextVal.val < smallest) {
+            smallest = nextVal.val;
+          }
+          //console.log(nextVal.val);
+          queue.push({ num: nextVal.val, next: data[key].next });
+        }
+      }
+    }
+  }
+  return smallest;
 }
 
 function main() {
   const data = parseFile();
-  const partOne = aSolution(data);
+  //const partOne = aSolution(data);
+  //console.log(partOne);
+  const partTwo = bSolution(data);
+  console.log(partTwo);
 }
 
 main();
