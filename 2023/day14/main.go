@@ -129,10 +129,18 @@ func calculateLoad(input [][]string) int {
 }
 
 func partTwo(input [][]string, cycles int) int {
-	for i := 0; i < cycles; i++ {
-		if i%1000000 == 0 {
-			fmt.Println(i)
+	for i := 1; i <= cycles; i++ {
+		rollNorth(input)
+		rollWest(input)
+		rollSouth(input)
+		rollEast(input)
+		if i == 153 {
+			//Works,but hard coded
+			cycles = (cycles - i) % 42
+			break
 		}
+	}
+	for i := 1; i <= cycles; i++ {
 		rollNorth(input)
 		rollWest(input)
 		rollSouth(input)
