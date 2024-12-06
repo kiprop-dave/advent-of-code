@@ -91,7 +91,7 @@ const checkLoop = (input: Input): { size: number; loop: boolean; } => {
   };
 };
 
-const partOne = (input: Input) => {
+const partOne = (input: Input): { size: number; path: Set<string>; } => {
   let [x, y] = input.start;
   let direction: Direction = UP;
   const { map } = input;
@@ -111,27 +111,18 @@ const partOne = (input: Input) => {
     }
   }
 
-  return visited.size;
+  return { size: visited.size, path: visited };
 };
 
-const partTwo = (input: Input) => {
+const partTwo = (input: Input, visited: Set<string>) => {
   let combinations = 0;
-  let x = 0;
-  while (x >= 0 && x < input.map[0].length) {
-    let y = 0;
-    while (y >= 0 && y < input.map.length) {
-      input.map[y][x] = "#";
-      if (x < 2 && y < 2) {
-        console.log({ x, y });
-        input.map.forEach(line => console.log(line));
-      }
-      const { loop } = checkLoop(input);
-      if (loop)
-        combinations++;
-      input.map[y][x] = ".";
-      y++;
-    }
-    x++;
+  for (const v of visited) {
+    const [x, y] = v.split(",").map(Number);
+    input.map[y][x] = "#";
+    const { loop } = checkLoop(input);
+    if (loop)
+      combinations++;
+    input.map[y][x] = ".";
   }
 
   return combinations;
@@ -154,7 +145,8 @@ const main = async () => {
   })();
   const res = await input;
   const data = parseInput(res.trim());
-  console.log({ partTwo: partTwo(data) });
+  const { size: partA, path } = partOne(data);
+  console.log({ partOne: partA, partTwo: partTwo(data, path) });
 };
 
 main();
